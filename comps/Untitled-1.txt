@@ -1,0 +1,333 @@
+1. In login page create a toast android so that when user will not be able to write any numbers.
+and press agree terms and conditions it would show "enter mobile number "if the entered numbers.
+would not be ten digits  then it would show "enter valid mobile number"this is perfect for init.
+we'll add things later on to it to make it even more perfect this is what i know we'll add init.
+2.#121222 lightest blue
+3.#123456  blue
+4.#126456 color used by whatsapp
+5. #383838
+6. #3D3D3D
+7. #000000 #system background primary
+8. #1C1C1E  # system background secondary
+10.#3A3A3C # system grey for icons placement
+11. #767680 # teritiary fill color 
+12.# 545458 # separator line
+13.#FFFFFF # primary Text
+14.#EBEBF5 #Secondary Text
+15.#1D1D1D #Top navigation bar with bg blur 100%
+16.
+17.
+18.
+19.
+20.
+import React, { useState } from 'react';
+import { View, ToastAndroid, StyleSheet ,Button, TextInput} from 'react-native';
+import CodeInput from 'react-native-confirmation-code-input';
+
+
+function OTP(props){
+  const [otpnumber,setNumber]= useState('')
+  const confirm = props.route.params.confirm
+  
+  
+
+  const Otpverify = async ()=>{  
+    try{
+      const data = await confirm.confirm(otpnumber);// const = let
+      props.navigation.navigate("Home");
+    }catch(error){
+      ToastAndroid.show("Invalid Code.",ToastAndroid.SHORT)
+    }
+  }
+
+    return (
+      <View style={{flex:1}} >
+          <TextInput
+           keyboardType={"numeric"}
+           maxLength={6}
+           placeholder="Enter Otp"
+           onChangeText = {(value)=>setNumber(value)}
+          ></TextInput>
+          <Button title = {"Submit"} onPress={Otpverify}></Button>
+     </View> 
+     
+    );
+  }
+  
+
+
+
+  export default OTP;
+
+
+
+
+import React from "react";
+import{View , ScrollView} from "react-native";
+import { NavigationContainer } from '@react-navigation/native';
+import 'react-native-gesture-handler';
+import { createStackNavigator } from '@react-navigation/stack';
+import Loginpage from "./comps/loginpage";
+import Home from "./comps/Home";
+import OTP from "./comps/otp"
+//import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// const Stack = createStackNavigator()
+
+const AyeVids = () =>{
+
+  return(
+    // <NavigationContainer>
+    //      <Stack.Navigator headerMode = {"none"}>
+    //      <Stack.Screen
+    //          name="Loginpage"
+    //          component={Loginpage}
+    //        />
+    //        <Stack.Screen 
+    //          name="OTP"
+    //          component={OTP}
+    //        />
+    //      <Stack.Screen
+    //          name="Home"
+    //          component={Home}
+    //        />
+    //      </Stack.Navigator>
+    //  </NavigationContainer>   
+    <Home/>
+  );
+};
+
+export default AyeVids;
+
+
+
+import auth from '@react-native-firebase/auth';
+import React,{useState} from "react";
+import {TextInput,
+        KeyboardAvoidingView,
+        TouchableWithoutFeedback,
+        Text, 
+        View,
+        StyleSheet,
+        Keyboard,
+        TouchableOpacity,
+        ScrollView,
+        ToastAndroid,
+      } from 'react-native';
+import Termsconds from './terms&conditions';
+
+
+
+function Loginpage(props){
+
+  const [number,setNumber]= useState("")
+  const [confirm,setConfirm]= useState(null)
+  
+
+
+
+
+
+
+
+  const Signin = async()=>{
+    const confirmation = await auth().signInWithPhoneNumber("+91"+number);
+    if (confirmation){
+      setConfirm(confirmation);
+      props.navigation.navigate('OTP',{"confirm":confirmation,"number":number})
+    }
+  }
+
+  const LengthChecker=()=>{
+    ToastAndroid.show("Please Enter a Valid Mobile Number",ToastAndroid.SHORT)
+  }
+
+   return(
+<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+  <View style = {styles.mainview}>{/* The whole page View*/}
+    <KeyboardAvoidingView>   
+      <Text style={styles.text}>
+        Give us  
+      </Text>
+          <Text style={styles.urmobno}>
+            Your Mobile Number
+          </Text>
+              <Text style={styles.coats}>
+                  Active Mobile Number is {"\n"}needed to 
+              </Text>
+                  <TextInput style ={styles.input}
+                    placeholder="Enter Your Mobile Number"
+                    onChangeText= {(value)=> setNumber(value)}  
+                    placeholderTextColor="grey"
+                    autoFocus={true}
+                    maxLength={10}
+                    onEndEditing={Keyboard.dismiss}
+                    keyboardType={"numeric"}>
+                  </TextInput>
+    </KeyboardAvoidingView>
+             <View style={styles.bottomView}>
+                        <TouchableOpacity 
+                          style={styles.button}
+                           disabled={number.length>=6?false : true }
+                           onPress ={number.length==10?Signin:LengthChecker}>
+                            <Text style={styles.textagree}>
+                              Agree & Continue 
+                              </Text>
+                          </TouchableOpacity>
+                        
+                            <ScrollView  style={{flexGrow:100}}>
+                              <Termsconds/>
+                            </ScrollView>
+                        </View>
+                          
+  </View>
+</TouchableWithoutFeedback>);
+    
+  
+};
+
+const styles =StyleSheet.create({
+  text:{
+    color:"grey",
+    fontSize:35,
+    fontWeight:"bold",
+    marginLeft:10,
+    marginTop:2,
+    fontFamily:"sans-serif-medium"
+  },
+
+  mainview :{
+    flex :1,
+    backgroundColor:"#000000",  
+  },
+  urmobno:{
+    fontSize:25,
+    color:"white",
+    fontWeight:"bold",
+    marginLeft:10,
+    fontFamily:"sans-serif"
+  },
+  coats:{
+    color:"white",
+    marginLeft:10,
+    marginTop:5,
+    fontSize:18
+  },
+  input:{
+    marginLeft:5,
+    height:"30%",
+    fontSize:25,
+    width:"100%",
+    color:"white",
+   
+  },
+  bottomView:{
+    width: '100%',
+    height: "30%",
+    flex: 1 ,
+    backgroundColor: "#1C1C1E",
+    borderTopRightRadius:25,
+    borderTopLeftRadius:25,
+    bottom:0, 
+    elevation:1,
+   
+  },
+  button:{
+    borderRadius:25,
+    borderWidth:2,
+    borderColor:"#0276FD",
+    backgroundColor:"black",
+    width:"60%",
+    height:"15%",
+    justifyContent:"center",
+    alignItems:'center',
+    marginTop:"2%",
+    marginLeft:"2%",
+    elevation:50,
+  },
+  textagree:{
+    color:"white",
+    fontSize:25,
+  },
+  
+});
+
+
+
+export default Loginpage;
+
+
+import React, { useState } from 'react';
+import { View, ToastAndroid, StyleSheet, Button, TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+function OTP(props){
+  const [otpnumber,setNumber]= useState('')
+  const confirm = props.route.params.confirm
+  const number = props.route.params.number
+  const [Token,SetToken]= useState('')
+
+
+
+  const Otpverify = async ()=>{  
+    try{
+      let data = await confirm.confirm(otpnumber) & await AsyncStorage.setItem("Token","number") ;// const = let
+      props.navigation.navigate("Home");
+    }catch(error){
+      ToastAndroid.show("Invalid Code.",ToastAndroid.SHORT)
+    }
+  }
+
+    return (
+      <View style={{flex:1}} >
+          <TextInput
+           keyboardType={"numeric"}
+           maxLength={6}
+           placeholder="Enter Otp"
+           onChangeText = {(value)=>setNumber(value)}
+          ></TextInput>
+          <Button title = {"Submit"} onPress={Otpverify}></Button>
+     </View> 
+     
+    );
+  }
+  
+
+
+
+  export default OTP;
+
+
+import React from "react";
+//import {ActivityIndicator} from "react-native";
+import { NavigationContainer } from '@react-navigation/native';
+import 'react-native-gesture-handler';
+import { createStackNavigator } from '@react-navigation/stack';
+import Loginpage from "./comps/loginpage";
+import Home from "./comps/Home";
+import OTP from "./comps/otp"
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
+const AyeVids = () =>{
+
+
+
+const Stack = createStackNavigator()
+
+const Value = AsyncStorage.getItem("Token")
+
+return(
+
+    <NavigationContainer>
+         <Stack.Navigator headerMode = {"none"}>
+          
+          </Stack.Navigator>
+     </NavigationContainer>   
+   
+  );
+};
+
+export default AyeVids;
+
+
