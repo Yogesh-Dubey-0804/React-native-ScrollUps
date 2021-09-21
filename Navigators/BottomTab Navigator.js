@@ -1,11 +1,9 @@
-import { Text, View ,Image,TouchableOpacity,  StatusBar } from 'react-native';
+import {View} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from './../comps/Home';
-import WebRTCMobile from './../comps/liveView';
-import shorts from '../comps/shorts';
-import Chats from './../comps/chats';
-import * as React from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import LiveView from './../comps/liveView';
+import MsgScreen from './../comps/chats';
+import  React from 'react';
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -19,15 +17,15 @@ function MyTabs() {
    
     tabBarOptions={{
       
-      showLabel: false,
+      showLabel: true,
       style:{
-         backgroundColor:"#ffffff",
+         backgroundColor:"rgba(0,0,0,0.85)",
          position:"absolute",
-         bottom:12,
-         right:7,
-         left :7,
+         bottom:0,
+         right:0,
+         left :0,
          borderColor:"#000000",
-         borderRadius:20,
+         //borderRadius:20,
          height:"10%"
 
         
@@ -38,6 +36,7 @@ function MyTabs() {
       
 
           options={{
+         
 
            
 
@@ -47,8 +46,7 @@ function MyTabs() {
                   <View style={{flex:1,justifyContent:'center'}}>
                    <EntypoIcon
                    name = "chat"
-                   height={50}
-                   width={50}
+                   siize = {50}
                    color={"#0276FD"}/>
              
                   </View>
@@ -70,9 +68,9 @@ function MyTabs() {
 
       
       />
-      <Tab.Screen name="LiveView" component={WebRTCMobile}
+      <Tab.Screen name="LiveView" component={LiveView}
        options={{
-
+        
         tabBarVisible:false,
 
         tabBarIcon:({focused})=>(
@@ -93,7 +91,7 @@ function MyTabs() {
 
       
     }} />
-      <Tab.Screen name="Chats" component={Chats} 
+      <Tab.Screen name="Chats" component={MsgScreen} 
        options={{
 
         tabBarIcon:({focused})=>(

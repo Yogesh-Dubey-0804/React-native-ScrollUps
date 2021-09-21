@@ -7,13 +7,20 @@ import { AuthContext } from './utils';
     
   const {OnBoarded}= React.useContext(AuthContext)
 
+const Navigate = () =>{
+  props.navigation.navigate("Loginpage")
+}
+
+
   
+
+
 return(
  <View style = {{flex:1}}>
    <StatusBar
    hidden={true}/>
 <Onboarding 
-   onDone={props.navigation.navigate("Loginpage")}
+   onDone={Navigate}
   pages={[
     {
       

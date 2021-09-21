@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { View, Text,StyleSheet ,TextInput,TouchableOpacity,KeyboardAvoidingView,TouchableWithoutFeedback,ToastAndroid, Button,Keyboard} from 'react-native';
 import { Alert } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 function OTP(props){
@@ -14,23 +16,23 @@ function OTP(props){
 
   const {signIn} = React.useContext(AuthContext)
  
-  // Loginhandle = (OtpNumber,Confirm,PhoneNumber)=>{
-  //    signIn(OtpNumber,Confirm,PhoneNumber);
-  // };
+  
 
-const checkmyNumber = (confirm,otpnumber)=>{
-    const  OtpVerify = async (confirm,otpnumber) => {
+
+const checkmyNumber = (confirm,otpnumber,number)=>{
+    const  OtpVerify = async (confirm,otpnumber,number) => {
         try {
-           let data = await confirm.confirm(otpnumber);
-           console.log("data", data);
+          let data = await confirm.confirm(otpnumber);
           props.navigation.navigate("test")
+          AsyncStorage.setItem("mobileNumber",number)
+          console.log(number)
         } catch (error) {null
-        // console.log('Invalid code.');
-        // ToastAndroid.show('Invalid code.',ToastAndroid.SHORT)
+
+        ToastAndroid.show('Invalid code.',ToastAndroid.SHORT)
         }
     };
 
-    OtpVerify(confirm,otpnumber);
+    OtpVerify(confirm,otpnumber,number);
   };
 
 
@@ -76,7 +78,7 @@ const checkmyNumber = (confirm,otpnumber)=>{
 
           </View>
 
-          <Button title = {"Submit"} onPress={()=>{checkmyNumber(confirm,otpnumber)}}></Button>
+          <Button title = {"Submit"} onPress={()=>{checkmyNumber(confirm,otpnumber,number)}}></Button>
      </View> 
 
      </TouchableWithoutFeedback>
@@ -106,7 +108,8 @@ const checkmyNumber = (confirm,otpnumber)=>{
     OtherTexts:{
       marginTop:"5%",
       color:"#FFFFFF",
-      alignSelf:'center'
+      alignSelf:'center',
+      
 
     },
     RightEdit:{
@@ -114,12 +117,14 @@ const checkmyNumber = (confirm,otpnumber)=>{
       fontWeight:"bold",
       marginRight:10,
       fontSize:15,
+      
     },
    leftResendOtp:{
       color:"#0276FD",
       fontWeight:"bold",
       marginLeft:10,
       fontSize:15,
+      
     }
 
 

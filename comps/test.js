@@ -13,7 +13,7 @@ import firestore from '@react-native-firebase/firestore';
 import ImagePicker from 'react-native-image-crop-picker';
 import storage from"@react-native-firebase/storage";
 import { AuthContext } from './utils';
-
+import { auth,firebase } from '@react-native-firebase/app';
 
 
 
@@ -29,7 +29,7 @@ const  test1 = () =>{
      };
     return firestore()
     .collection("Users")
-    .doc("Values")
+    .doc(firebase.auth().currentUser.uid)
     .set({
         Name,
         Age
@@ -58,7 +58,7 @@ const  test1 = () =>{
             height: 400,
             cropping: true,
           }).then(image => {
-            console.log(image);
+            // console.log(image);
             setImage(image.path)
           });
     };
@@ -69,7 +69,7 @@ const  test1 = () =>{
             height: 400,
             cropping: true
           }).then(image => {
-            console.log(image);
+            // console.log(image);
             setImage(image.path)
           });
     };
@@ -83,25 +83,32 @@ const  test1 = () =>{
       
         const extension = filename.split('.').pop(); 
         const name = filename.split('.').slice(0, -1).join('.');
-        filename = name + Date.now() + '.' + extension;
-    
+        filename = firebase.auth().currentUser.uid +name + Date.now() + '.' + extension;
+        
+     
+
+
+
         setUploading(true);
         setTransferred(0);
     
-        const storageRef = storage().ref(`photos/${filename}`);
+        const storageRef = storage().ref(`photos/userAvatars/${filename}`);
         const task = storageRef.putFile(uploadUri);
     
        
         task.on('state_changed', (taskSnapshot) => {
-          console.log(
-            `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
-          );
+          // console.log(
+          //   `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
+          // );
     
           setTransferred(
             Math.round(taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) *
               100,
           );
         });
+
+                
+
     
         try {
           await task;
@@ -112,11 +119,19 @@ const  test1 = () =>{
     
           setUploading(false);
           setImage(image);
-    
+          const ImageReference = (fileName,downloaduri )=>{
+           
+            let  path =  'photos/userAvatars/'+fileName
+              firestore().collection("Users").doc(firebase.auth().currentUser.uid).set({
+                userAvatarPath: path,
+                userImageUri:downloaduri,
+              },{merge:true})
+           }
+           ImageReference(filename,url)
           return url;
     
         } catch (e) {
-          console.log(e);
+          // console.log(e);
           return null;
         }
     
@@ -126,7 +141,6 @@ const  test1 = () =>{
        signIn(Name,Age);
     }
 
-      
 
 const ImagePress=()=>{
   Alert.alert(

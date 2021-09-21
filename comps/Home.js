@@ -1,22 +1,24 @@
 
 import firestore from '@react-native-firebase/firestore';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
-import { View, Text,StyleSheet,TouchableOpacity,StatusBar} from 'react-native';
+import { View, Text,StyleSheet,TouchableOpacity,StatusBar,Image, Dimensions} from 'react-native';
 import { AuthContext } from './utils';
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
+
+
+
+ const Home = () =>{
   
-
-
-
- const Home = (props) =>{
-  
-  const registrationpage = (prop)=>{
-    props.navigation.navigate("test")
-  }
+ 
+    
+ 
   const {signOut} = React.useContext(AuthContext)
   
-  // console.log(UserDocument)
+  
 
   return(
          <View style={styles.container}>
@@ -25,14 +27,16 @@ import { AuthContext } from './utils';
            <Text style={{color:"white"}}> {"\n"}
          </Text>
            
-            
+              <Image
+              source = {{uri:"https://images.unsplash.com/photo-1454789548928-9efd52dc4031?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"}}
+              blurRadius={0.2}
+              style = {{
+                height:windowHeight,
+                width:windowWidth,
+              }}
+              /> 
 
-                    <TouchableOpacity  onPress= {()=>{signOut()}} style = {{bottom:"15%"}}>
-                       <Text style ={{color:"#0276FD",fontWeight:"bold",fontFamily:"serif",fontSize:25,elevation:1,shadowOpacity:1,shadowColor:"yellow"}}>LogOut</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity  onPress= {registrationpage} style = {{bottom:"15%"}}>
-                       <Text style ={{color:"#0276FD",fontWeight:"bold",fontFamily:"serif",fontSize:25,elevation:1,shadowOpacity:1,shadowColor:"yellow"}}>Home</Text>
-                    </TouchableOpacity>
+                  
          </View>
   
    

@@ -79,6 +79,15 @@
 		<string>Octicons.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
+		<string>NewYork.ttf</string>
+		<string>NewYorkExtraLarge-Medium.otf</string>
+		<string>NewYorkExtraLarge-Regular.otf</string>
+		<string>NewYorkLarge-Medium.otf</string>
+		<string>SFUIDisplay-Black.otf</string>
+		<string>SFUIDisplay-Bold.ttf</string>
+		<string>SFUIDisplay-Medium.otf</string>
+		<string>SFUIDisplay-Thin.otf</string>
+		<string>SFUIDisplay-Ultralight.otf</string>
 	</array>
 </dict>
 </plist>

@@ -59,11 +59,11 @@ const App = () => {
         userToken = null;
         if (Name!=null && Age != null){
         try{
-          userToken = "kjfd"
+          userToken = "userregistered"//kfjd
            await AsyncStorage.setItem("userToken",userToken);
          }catch(e){null}
         
-        
+         
         }
         // else{
         //   Alert.alert("Error To Upload",
