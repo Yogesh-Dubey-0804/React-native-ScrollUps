@@ -206,4 +206,4 @@ const styles = StyleSheet.create({
     font:{
         fontFamily:"OpenSansBold"
     }
-  });
+  });   

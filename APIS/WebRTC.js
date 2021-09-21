@@ -73,6 +73,7 @@ export default class WebRTC {
     mediaDevices.getUserMedia({
       audio: true, video: {facingMode: 'user'},
     }).then((stream) => {
+
       console.log('Stream found');
       this.localStream = stream;
       // Connect after making sure that local stream is availble
