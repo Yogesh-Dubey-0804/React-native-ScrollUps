@@ -1,32 +1,17 @@
 import React ,{ useState} from 'react';
-import {  StyleSheet, View,TouchableOpacity} from 'react-native';
-import WebRTCMobile from './WebRTCMobileVideoComponent';
-import { Provider as PaperProvider,
-        Text
+import {  StyleSheet, View,ActivityIndicator,TouchableOpacity} from 'react-native';
+import WebrtcVideoMobile from './MobileRemoteVideo';
+import { Provider as PaperProvider,        Text
 } from 'react-native-paper';
 
 const Description = (props) =>{
-    var idlist = []
-    var  id = props.DbId.id 
-    idlist.push(id)
-    console.log(idlist)
-   
-  function ScreenGiver(){
-      var a = 0;
-      if (a==null){
-         return(<WebRTCMobile/>)
-      }else{
-        return(<WebRTCMobile/>)
-         
-      }
-  }
-
+  
 
 
     return (
         <View style = {styles.container}>
          
-            <ScreenGiver/>
+            <WebrtcVideoMobile/>
            <View style = {styles.Description}>
            <TouchableOpacity style = {styles.userInfoComponent}>                   
                 <Text style = {styles.text}>@ {props.DbId.name}</Text>

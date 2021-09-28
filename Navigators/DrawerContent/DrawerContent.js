@@ -24,7 +24,7 @@ export  function DrawerContent(props) {
 
 
    
-    const [userUriId,SetUseruri] = useState("")
+    const [userUriId,SetUseruri] = useState(null)
 
     const useruid =  firebase.auth().currentUser.uid
     const FetchUserdata = async(userid)=>{
