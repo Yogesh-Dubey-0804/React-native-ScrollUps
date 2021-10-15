@@ -2,16 +2,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from './comps/utils';
 import React, { useEffect } from 'react';
-import { StatusBar, View, Text, ToastAndroid, DrawerLayoutAndroid } from 'react-native';
+import { StatusBar,LogBox, View, Text, ToastAndroid, DrawerLayoutAndroid } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import DrawerTabsNavigators from './Navigators/DrawerNavigators'
 import { AuthStackNavigator } from './Navigators/AuthStackNavigtor';
 import { RootStackNavigator } from './Navigators/RootStackNavigator';
 
-
+LogBox.ignoreAllLogs(true);
 
 const App = () => {
-
 
   
     const initialLoginState = {

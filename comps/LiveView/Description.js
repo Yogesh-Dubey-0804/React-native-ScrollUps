@@ -1,8 +1,5 @@
 import React ,{ useState} from 'react';
-import {  StyleSheet, View,ActivityIndicator,TouchableOpacity} from 'react-native';
-import WebrtcVideoMobile from './MobileRemoteVideo';
-import { Provider as PaperProvider,        Text
-} from 'react-native-paper';
+import { Text, StyleSheet, View,TouchableOpacity} from 'react-native';
 
 const Description = (props) =>{
   
@@ -11,7 +8,7 @@ const Description = (props) =>{
     return (
         <View style = {styles.container}>
          
-            <WebrtcVideoMobile/>
+           
            <View style = {styles.Description}>
            <TouchableOpacity style = {styles.userInfoComponent}>                   
                 <Text style = {styles.text}>@ {props.DbId.name}</Text>

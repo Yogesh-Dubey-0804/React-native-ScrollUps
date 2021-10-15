@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet,FlatList,Image,Dimensions,TouchableOpacity,TextInput} from 'react-native';
+import { Text, View, StyleSheet,FlatList,Image,Dimensions,StatusBar,TextInput} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Card ,Title } from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -15,7 +15,7 @@ const getCurrentDate=()=>{
 
  
   return date + '/' + month + '/' + year;//format: dd-mm-yyyy;
-}
+}           
 
 
 
@@ -225,6 +225,7 @@ export default function MsgScreen() {
   
   return (
     <View style = {styles.MsgScreenConatainer}>
+      <StatusBar hidden={false} translucent = {true} backgroundColor = {'rgba(52, 52, 52, 0)'}/>
      
     <View style = {styles.searchBAR}>
       <MaterialIcons style = {styles.searchIcon} name ="search" size={20} color="#3A3A3C"/>

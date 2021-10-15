@@ -59,17 +59,6 @@ var Posts = [{
     intrest3: "#AmericanPolice"
   },
   Desc: "I love india but i used to belong from other countrie's"
-}, {
-  name: "Shirley Setia",
-  id: 6,
-  Country: "Af",
-  UserId: "23546-ffvbvgfs-24651-fyhvddfv",
-  Intrests: {
-    intrest1: "#GeorgeFloyed",
-    intrest2: "#WearewithBlackPersons",
-    intrest3: "#AmericanPolice"
-  },
-  Desc: "I love india but i used to belong from other countrie's"
-}];
+}, {}];
 var _default = Posts;
 exports["default"] = _default;

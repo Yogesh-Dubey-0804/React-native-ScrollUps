@@ -1,4 +1,4 @@
-import React,{ useState} from 'react';
+import React,{ useEffect,useState} from 'react';
 import {
     RTCPeerConnection,
     RTCIceCandidate,
@@ -6,16 +6,21 @@ import {
     RTCView,
     mediaDevices,
   } from 'react-native-webrtc';
-  import {View,Text,StyleSheet,Button} from 'react-native';
+  import {View,Text,StyleSheet,Button,Dimensions,StatusBar} from 'react-native';
+  import {connect} from 'react-redux';
   import socketIO from 'socket.io-client';
-  
+  import array from './static APIS/GetData API';
+  import LocalStreamComponent from '../comps/LiveView/LocalStreamComponent'
+  import RemoteStreamComponent from '../comps/LiveView/RemoteStreamComponent'
+
   // Config variables: change them to point to your own servers
-  const SIGNALING_SERVER_URL = 'http://192.168.0.101:9999';
+  const SIGNALING_SERVER_URL = 'http://192.168.0.105:9999';
   const TURN_SERVER_URL = '192.168.0.1:3478';
   const TURN_SERVER_USERNAME = 'username';
   const TURN_SERVER_CREDENTIAL = 'credential';
 
-
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
   // WebRTC config: you don't have to change this for the example to work
 // If you are testing in local network, you can just use PC_CONFIG = {iceServers: []}
 const PC_CONFIG = {
@@ -33,21 +38,23 @@ const PC_CONFIG = {
     ]
 };
 
-export default function RemoteStreamGiver(props) {
 
-    const Socket = socketIO(SIGNALING_SERVER_URL,{
-        autoConnect: false,
-        jsonp: false,
-        transports: ['websocket'],
-    });
-
-    const [LocalStream,SetLocalStream] = useState({toURL :()=>null})
-    const [pc,setpc] = useState( new RTCPeerConnection(PC_CONFIG))
-    const [RemoteStream,SetRemotStream]= useState({toURL:()=>null});
+const Socket =  socketIO(SIGNALING_SERVER_URL,{
+  autoConnect: false,
+  jsonp: false,
+  transports: ['websocket'],
+})
 
 
+const RemoteStreamGiver = (props) =>{
+  var id = props.id
 
 
+    const [LocalStreamCalled,setLocalStreamCalled] = useState(false)
+    const [RemoteStream,SetRemoteStream]= useState({toURL:()=>null});
+    const [usercame,setUserCame]= useState(null)
+
+ 
 
     Socket.on('data',(data)=>{
       handleSignalingData(data);
@@ -60,34 +67,39 @@ export default function RemoteStreamGiver(props) {
 
     
     const sendData = (data) =>{
+      
         Socket.emit('data', data)
     }
 
-    const getLocalStream  = () =>{
+    const getLocalStream  = () =>{  
 
         mediaDevices.getUserMedia({
             audio: true, video: {facingMode: 'user'},
           }).then((stream) => {
       
+            
+            // SetLocalStream(stream)
+            props.LocalStreamset(stream)
           
-            SetLocalStream(stream)
-            pc.addStream(stream)
-            Socket.connect();
+              console.log("stream")
+           //  Socket.connect()
+            props.pc.addStream(stream)
+            
           
-      
+                
           }).catch(error => {
             console.error('Stream not found: ', error);
           });
-          
-         
-        
+      
     }
+
+  
   
     
     const CreatePeerConnection = () =>{
         try {
          
-           pc.onicecandidate  =  event  =>{
+           props.pc.onicecandidate  =  event  =>{
             if (event.candidate) {
               console.log('ICE candidate');
              sendData({
@@ -97,20 +109,28 @@ export default function RemoteStreamGiver(props) {
             }
 
       }
-           pc.onaddstream = event =>{
+                  props.pc.onaddstream = event =>{
             console.log("Add Stream")
-            SetRemotStream(event.stream)        
-          }
+           SetRemoteStream(event.stream) 
+            setUserCame(1)    
+            // if (props.Num>0){
+            //   array.push({
+            //     id : props.Num+1
+            //   })
+            // }
+        //    props.RemoteStreamset(event.stream)
+        }   
            console.log("PeerConnectionCreated")
           
         } catch (error) {
             console.error(error)
         }
     }
+    
 
 
     const sendOffer = () => {
-            pc.createOffer({}).then((description)=>{
+            props.pc.createOffer({}).then((description)=>{
             setAndSendLocalDescription(description),
             (error) => { console.error('Send offer failed: ', error); }
           }  
@@ -119,86 +139,172 @@ export default function RemoteStreamGiver(props) {
 
     const sendAnswer = () =>{
        console.log(" Answer Send ")
-       pc.createAnswer().then((description)=>{
+       props.pc.createAnswer().then((description)=>{
          setAndSendLocalDescription(description),
          (error)=>{console.error(error)}
        }
 
        );
     };
-
+    
    
 
       const setAndSendLocalDescription = (description) =>{
-        pc.setLocalDescription(description);
+        props.pc.setLocalDescription(description);
         console.log("Local des")
         sendData(description)
-      };
-
-
+      };    
+      
+     
       
      const handleSignalingData = (data) => {
         switch (data.type) {
           case 'offer':
            CreatePeerConnection();
-            pc.setRemoteDescription(new RTCSessionDescription(data));
+            props.pc.setRemoteDescription(new RTCSessionDescription(data));
             sendAnswer();
             break;
           case 'answer':
-            pc.setRemoteDescription(new RTCSessionDescription(data));
+            props.pc.setRemoteDescription(new RTCSessionDescription(data));
             break;
           case 'candidate':
-            pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+            props.pc.addIceCandidate(new RTCIceCandidate(data.candidate));
             break;
         }
       };
+      const RemoteStreamCompoent1 = () =>{
+   
+        return(
+          <View style = {{backgroundColor :"blue"}}>
+            <RTCView
+            streamURL = {RemoteStream.toURL()}
+            objectFit = {"cover"} 
+            style = {styles.RSCcontainer}            
+            />
+            </View>
+         
+        )
+      }
+
+    
+
+
+
+    function StreamProvider (){          
+      if (usercame == null){
+        return(
+          <LocalStreamComponent/>
+        )
+      }       
+      else{ 
+        console.log("remote")
+        return(
+          <RemoteStreamComponent RemoteStream = {RemoteStream}/>
+        )
+      }
+
+    }
+
+    useEffect(()=>{
+      if (id == 0){
+        if (LocalStreamCalled == false){
+          getLocalStream()
+          setLocalStreamCalled(true)
+        }
+
+      }
+      else if (id == props.Num){
+               Socket.connect()
+               console.log("Here RemoteStreamComponent",props.Num,id)
+      }
+      else if (id == props.Num-1){
+              Socket.disconnect()
+              props.pc.close()
+      }
+    },[props.Num,id])
 
 return (
   <View style = {styles.container }>
-
-  <RTCView
-  streamURL = {RemoteStream.toURL()}
-  objectFit={"cover"}
-
-  style = {{
-    width:"100%",
-    height:"50%",
-    position:"absolute",
-    top:0,
-    left:0,
-    backgroundColor:"black"
-    }}
+    <StatusBar
+    translucent = {true}                                  
+    />
+    <StreamProvider
   />
 
-  <RTCView
-    streamURL = {LocalStream.toURL()}
-    objectFit={"cover"}
-    style = {{
-      width:"100%",
-      height:"50%",
-      position:"absolute",
-      bottom:0,
-      left:0,
-      backgroundColor:"grey"
-    }}
-  />
-  <Button
-    title ={"Connect"}
-    onPress={() => getLocalStream()}
-  />
   </View>
-
 )
   }
+
+
+
+  function mapStateToProps(state) {
+    return {
+        LocalStream: state.LocalStream,
+        pc : state.pc,
+        InitialUserId:state.InitialUserId,  
+        RemoteStream:state.RemoteStream ,
+        Num :state.Num,
+        socket:state.socket  
+    }
+}
+
+function mapDispatchToProps(dispatch) {            
+    return {
+      LocalStreamset: (stream) => dispatch(
+        { 
+          type: 'SET_LOCAL_Stream',
+          data:stream
+        }),
+      SetPc : (pc) => dispatch(
+        {
+          type:"SET_PC",
+          pcvalue:pc
+        }
+      ),        
+      UpdateUserId : (newUserId) => dispatch(
+        {
+          type :"UP_DATE_USER_INTIAL_ID",
+          newUserId:newUserId
+        }
+        ), 
+      RemoteStreamset : (stream) => dispatch(
+          { 
+            type: 'REMOTE_Stream',
+            data:stream
+          }),
+
+    }
+}
+
+
 const styles = StyleSheet.create({
   container : {
     flex:1,
+    height:"100%",
     width:"100%",
     flexDirection:"column",
-    marginBottom:60
+  
   },
-
+  container1 : {
+    flex:1,
+    height:"100%",
+    width:"100%",
+    flexDirection:"column",
+  
+  },
+  
+  RSCcontainer:{
+    flex:1,
+    height:windowHeight,
+    width:windowWidth,
+  },
+  RSCDescription:{
+    position:"absolute",
+    bottom:0,
+    height:80,
+    width:windowWidth,
+  }
 })
 
-export default RemoteStreamGiver;
 
+export default  connect(mapStateToProps,mapDispatchToProps)(RemoteStreamGiver)

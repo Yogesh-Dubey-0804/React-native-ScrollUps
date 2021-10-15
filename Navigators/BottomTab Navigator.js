@@ -1,18 +1,22 @@
 import {View} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from './../comps/Home';
-import LiveView from './../comps/liveView';
+import ScrollUp from './../comps/liveView';
 import MsgScreen from './../comps/chats';
 import  React from 'react';
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import {Provider} from 'react-redux';
+import store from '../APIS/redux/store';
+
+
 
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
   return (
-    
+    <Provider store = {store}>
     <Tab.Navigator
    
     tabBarOptions={{
@@ -25,7 +29,6 @@ function MyTabs() {
          right:0,
          left :0,
          borderColor:"#000000",
-         //borderRadius:20,
          height:"10%"
 
         
@@ -68,7 +71,7 @@ function MyTabs() {
 
       
       />
-      <Tab.Screen name="LiveView" component={LiveView}
+      <Tab.Screen name="LiveView" component={ScrollUp}
        options={{
         
         tabBarVisible:false,
@@ -83,14 +86,13 @@ function MyTabs() {
              
             </View>
         )
-
-
+ 
 
 
 
 
       
-    }} />
+   }} />
       <Tab.Screen name="Chats" component={MsgScreen} 
        options={{
 
@@ -115,6 +117,8 @@ function MyTabs() {
      
 
     </Tab.Navigator>
+    </Provider>
+
   );
 }
 
