@@ -5,26 +5,13 @@ import { RTCView } from 'react-native-webrtc';
 import {useSelector,useDispatch} from 'react-redux';
 import Description from './Description'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const data = {
-    name :"Shirley Setia",
-    id : 6,
-    Country :"Af",
-    UserId:"23546-ffvbvgfs-24651-fyhvddfv",
-    Intrests:{
-        intrest1:"#GeorgeFloyed",
-        intrest2:"#WearewithBlackPersons",
-        intrest3:"#AmericanPolice"
-    },
-    Desc: "I love india but i used to belong from other countrie's"
-
-}
 
 const RemoteStreamComponent = (props) =>{
-    const StoreValues = useSelector((state)=>state)
+   const ReduxStore = useSelector((state)=>state)
     return(
        
            
@@ -33,13 +20,13 @@ const RemoteStreamComponent = (props) =>{
         translucent = {true}
         />
           <RTCView
-          streamURL = {props.RemoteStream.toURL()}
+          streamURL = {ReduxStore.RemoteStream.toURL()}
           objectFit = {"cover"}
           style = {styles.stream}                                 
           />
           
         <View style = {styles.Container2}>
-            <Description DbId= {StoreValues.InitialUserId}/>
+            <Description DbId= {ReduxStore.InitialUserId}/>
             <View style = {styles.btnContainer}>
 
                 <Image
@@ -60,6 +47,7 @@ const RemoteStreamComponent = (props) =>{
                 name = {"account-multiple-plus"}
                 size={45}
                 color={"white"}
+            
                 />
             </View>
         </View>
@@ -78,7 +66,7 @@ const styles = StyleSheet.create({
     stream:{
         position:"absolute",
         top:0,
-        bottom:0,
+        bottom:0 - StatusBar.currentHeight,
         left:0,
         right:0,
     },

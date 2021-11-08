@@ -17,6 +17,8 @@ var _reactNativeWebrtc = require("react-native-webrtc");
 
 var _socket = _interopRequireDefault(require("socket.io-client"));
 
+var _drawer = require("@react-navigation/drawer");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -26,9 +28,9 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var SIGNALING_SERVER_URL = 'http://192.168.0.103:9999';
-var TURN_SERVER_URL = '192.168.0.1:3478';
-var TURN_SERVER_USERNAME = 'username';
-var TURN_SERVER_CREDENTIAL = 'credential';
+var TURN_SERVER_URL = '13.233.167.171:3478';
+var TURN_SERVER_USERNAME = 'user';
+var TURN_SERVER_CREDENTIAL = 'root';
 var PC_CONFIG = {
   iceServers: [{
     urls: 'turn:' + TURN_SERVER_URL + '?transport=tcp',
@@ -54,7 +56,7 @@ var initialState = {
       return null;
     }
   },
-  socket: null
+  RemoteStreamObtained: false
 };
 
 var reducer = function reducer() {
@@ -69,12 +71,12 @@ var reducer = function reducer() {
 
     case 'SET_PC':
       return _objectSpread({}, state, {
-        pc: action.pcvalue
+        pc: new _reactNativeWebrtc.RTCPeerConnection(PC_CONFIG)
       });
 
     case 'UP_DATE_USER_INITIAL_ID':
       return _objectSpread({}, state, {
-        InitialUserId: action.newUserId
+        InitialUserId: action.data
       });
 
     case "UPDATE NUM":
@@ -85,6 +87,11 @@ var reducer = function reducer() {
     case 'REMOTE_Stream':
       return _objectSpread({}, state, {
         RemoteStream: action.data
+      });
+
+    case "REMOTE_STREAM_OBTAINED":
+      return _objectSpread({}, state, {
+        RemoteStreamObtained: action.data
       });
   }
 

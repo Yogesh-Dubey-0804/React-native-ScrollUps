@@ -1,18 +1,17 @@
 import {
-    RTCPeerConnection,
-    RTCIceCandidate,
-    RTCSessionDescription,
-} from 'react-native-webrtc';
-import React,{useState,useEffect} from 'react';
-import {StatusBar,Button,View,Dimensions,FlatList} from 'react-native';
-import {useSelector,useDispatch} from 'react-redux'
-import array from '../APIS/static APIS/GetData API';
-import Posts from '../APIS/PostsDesc';
-import RenderItem from './../APIS/Webrtc and Sockets/RenderItem';
-import Socket from './../APIS/Webrtc and Sockets/SOCKETS';
-const windowHeight = Dimensions.get('window').height;
+    useSelector,
+    useDispatch
+} from 'react-redux';
+import {
+  RTCPeerConnection,
+  RTCIceCandidate,
+  RTCSessionDescription,
 
+ } from 'react-native-webrtc';
+ import array from '../static APIS/GetData API'
+import React, {useState} from 'react';
 
+function Socket (Ws,ReduxStore,dispatch,PC,SETPC){
 
 const SIGNALING_SERVER_URL = 'http://192.168.0.103:9999';
 const TURN_SERVER_URL = '13.233.167.171:3478';
@@ -33,36 +32,21 @@ const PC_CONFIG = {
   ]
 };
 
-var PC;
-const ScrollUp = () =>{
 
-   
-    const ReduxStore = useSelector((state)=>state)
-    const dispatch = useDispatch()
-    const URL = "wss://2ywi2ldinf.execute-api.ap-south-1.amazonaws.com/production"
-
-   
-    useEffect(()=>{
-
-        Ws.onopen = () => {
-            console.log("Console.log WebSocket connected ")
-        }
-
-    },[])
-
-    const Ws = new WebSocket(URL)
-
-    
 
   const fetch_USERS = () =>{
-    PC = new RTCPeerConnection(PC_CONFIG)
+     
     Ws.send(JSON.stringify({
         action:"default",
     }))
-  }
+}
+
+                  
+   fetch_USERS()
 
    let PartnerID ;
-  
+
+
     Ws.onmessage = (entity)=>{ 
     mesage = JSON.parse(entity.data)
     if (mesage.type!="data"){
@@ -87,6 +71,8 @@ const ScrollUp = () =>{
 
 
 
+
+
     const sendData = (DATAS) =>{
 
         
@@ -99,9 +85,9 @@ const ScrollUp = () =>{
     }
 
     const createPeerConnection = () =>{
-    
+          
       try {
-       
+          setTimeout(SETPC (new RTCPeerConnection(PC_CONFIG)),2000)
           PC.onicecandidate  =  event  =>{
             if (event.candidate) {
               // console.log('ICE candidate');
@@ -172,53 +158,6 @@ const ScrollUp = () =>{
             break;
         }
       };
+}
 
-
-
-
-
-
-
-
- const ScrollOnEvent = (PC) => {
- 
-  
-    dispatch({type:"REMOTE_Stream",data: {toURL:() => null}})
-  
-
-   
-    dispatch({type:"UPDATE NUM"})
-    console.log(ReduxStore.Num)
-    var data = Posts[ReduxStore.Num]
-    dispatch({type : "UP_DATE_USER_INITIAL_ID",data: data})
-        console.log(ReduxStore.Num, "Num" ) 
-        if ( ReduxStore.Num > 0){
-          console.log("CLOSE FUNCTION COMPLETED",PC)
-          PC.close()
-          dispatch({type :"REMOTE_STREAM_OBTAINED",data : false}) 
-    }
-    fetch_USERS()
-
-} 
-
-
-
-    return(
-        <View>
-            <StatusBar       
-            hidden = {false} translucent = {true} />
-            <FlatList
-            data = {array}
-            renderItem = {({item})=><RenderItem id = {item.id} pc = {PC}/>}
-            keyExtractor = {(item)=>item.id}
-            snapToInterval = {windowHeight+ StatusBar.currentHeight}
-            disableScrollViewPanResponder = {true}
-            disableInpppppppppppppppppppppppppppppppppppppppppppppppppppppppppppptervalMomentum = {true}
-            onScrollEndDrag = {() =>ScrollOnEvent(PC)}
-           />       
-        </View>
-    )
-}                
-
-
-export default ScrollUp;
+export default Socket;

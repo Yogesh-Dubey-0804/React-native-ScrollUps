@@ -10,12 +10,13 @@ import {
     mediaDevices,
 
   } from 'react-native-webrtc';
-import socketIO from 'socket.io-client';
+import socketIO from 'socket.io-client'; 
+import { getIsDrawerOpenFromState } from '@react-navigation/drawer';
 
   const SIGNALING_SERVER_URL = 'http://192.168.0.103:9999';
-  const TURN_SERVER_URL = '192.168.0.1:3478';
-  const TURN_SERVER_USERNAME = 'username';
-  const TURN_SERVER_CREDENTIAL = 'credential';
+  const TURN_SERVER_URL = '13.233.167.171:3478';
+  const TURN_SERVER_USERNAME = 'user';
+  const TURN_SERVER_CREDENTIAL = 'root';
   const PC_CONFIG = {
     iceServers: [
       {
@@ -35,9 +36,9 @@ const initialState = {
     LocalStream : {toURL :()=>null},
     pc :  new RTCPeerConnection(PC_CONFIG),
     InitialUserId : 0,
-    Num :0,
+    Num:0,
     RemoteStream : {toURL:()=>null},
-    socket :null,
+    RemoteStreamObtained:false,
    
 }
        
@@ -52,13 +53,13 @@ const reducer = (state = initialState,action)=>{
 
                 return{
                     ...state,
-                    pc:action.pcvalue
+                    pc:new RTCPeerConnection(PC_CONFIG)
                 }
          case 'UP_DATE_USER_INITIAL_ID':
 
                return{
                    ...state,
-                   InitialUserId:action.newUserId     
+                   InitialUserId:action.data     
                 }
          case "UPDATE NUM":
                 
@@ -66,11 +67,17 @@ const reducer = (state = initialState,action)=>{
                   ...state,
                   Num:state.Num+1
                 }
-                case 'REMOTE_Stream':
+          case 'REMOTE_Stream':
             
                   return { 
                       ...state,
                       RemoteStream: action.data }
+          case "REMOTE_STREAM_OBTAINED":
+            return{
+              ...state,
+              RemoteStreamObtained:action.data,
+            }
+         
         
     }
 

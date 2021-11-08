@@ -75,7 +75,7 @@ const App = () => {
         try {
           await AsyncStorage.removeItem('userToken');
         } catch(e) {
-          console.log(e);
+      
         }
         dispatch({ type: 'LOGOUT' });
       },
@@ -98,7 +98,7 @@ const App = () => {
         try {
           userToken = await AsyncStorage.getItem('userToken');
         } catch(e) {
-          console.log(e);
+        
         }
         
         dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });

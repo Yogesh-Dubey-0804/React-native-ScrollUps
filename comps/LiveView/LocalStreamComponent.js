@@ -1,48 +1,68 @@
-import React from 'react'
-import {View,Image,StyleSheet,Dimensions,StatusBar} from 'react-native';
+import React,{useEffect} from 'react'
+import {View,Image,StyleSheet,Dimensions,StatusBar,Button} from 'react-native';
 import {
-    RTCPeerConnection,
-    RTCIceCandidate,
-    RTCSessionDescription,
     RTCView,
     mediaDevices,
   } from 'react-native-webrtc'; 
 import {useSelector,useDispatch} from 'react-redux';
-import Description from './Description'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const windowHeight = Dimensions.get('window').height+ StatusBar.currentHeight;
 
-const data = {
-    name :"Shirley Setia",
-    id : 6,
-    Country :"Af",
-    UserId:"23546-ffvbvgfs-24651-fyhvddfv",
-    Intrests:{
-        intrest1:"#GeorgeFloyed",
-        intrest2:"#WearewithBlackPersons",
-        intrest3:"#AmericanPolice"
-    },
-    Desc: "I love india but i used to belong from other countrie's"
 
-}
 
-export default function LocalStreamComponent (props) {
-    const StoreValues = useSelector((state)=>state)
+function LocalStreamComponent (props) {
+
+    const Reduxstore = useSelector((state)=>state)
+    const dispatch = useDispatch()
+        
+    var id = props.id
+    const getLocalStream  = () =>{  
+
+        mediaDevices.getUserMedia({
+            audio: true, video: {facingMode: 'user'},
+          }).then((stream) => {
+      
+            
+            
+        dispatch({
+            type :"SET_LOCAL_Stream",
+            data : stream
+        })
+         
+            
+          
+                
+          }).catch(error => {
+            console.error('Stream not found: ', error);
+          });
+      
+    }
+
+    
+    useEffect(()=>{
+        if (id == 0){
+        getLocalStream()
+        }
+    },[])
+
+
+
+
     return(  
     <View style = {styles.MainView}>
         <StatusBar
         translucent = {true}
         />
           <RTCView
-          streamURL = {StoreValues.LocalStream.toURL()}
+          streamURL = {Reduxstore.LocalStream.toURL()}
           objectFit = {"cover"}
           style = {styles.stream}            
           />
           
         <View style = {styles.Container2}>
-            <Description DbId= {data}/>
+           {/* <Description DbId= {data}/>*/}
             <View style = {styles.btnContainer}>
 
                 <Image
@@ -100,3 +120,6 @@ const styles = StyleSheet.create({
     }
    
 })
+
+
+export default LocalStreamComponent;

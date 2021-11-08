@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import { View, Text,StyleSheet,TouchableOpacity,StatusBar,Image, Dimensions} from 'react-native';
 import { AuthContext } from './utils';
-import RemoteStreamGiver from './../APIS/WebrtcApi';
 import ScrollUp from './liveView';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
